@@ -1,15 +1,16 @@
 #include "main.h"
 
-/*
-int main(int ac, char **av, char **env)
+
+/* int main(int ac, char **av, char **env)
 {
 	printf("%p\n", environ[0]);
 	printf("%p\n", env[0]);
 	printf("%s\n", _getenv("PATH"));
 	printf("%s\n", _getenv("PWD"));
+	printenv();
 	return (0);
-}
-*/
+} */
+
 
 void printenv(void)
 {
@@ -17,7 +18,8 @@ void printenv(void)
 
 	while (environ[i])
 	{
-		printf("%s\n", environ[i]);
+		_puts(environ[i]);
+		_putchar('\n');
 		i++;
 	}
 }
@@ -61,9 +63,12 @@ int _setenv(const char *name, const char *value, int overwrite)
 	int i, len = 0;
 	int loc = envloc(name);
 	char **new_environ;
-	
-	nameCpy = strcpycat(nameCpy, "=");
-	nameCpy = strcpycat(nameCpy, valueCpy);
+	char *temp = strcpycat(nameCpy, "=");
+
+	free(nameCpy);
+	nameCpy = strcpycat(temp, valueCpy);
+	free(valueCpy);
+	free(temp);
 	
 	if (loc != -1)
 	{
@@ -78,15 +83,20 @@ int _setenv(const char *name, const char *value, int overwrite)
 
 	new_environ = malloc(sizeof(*new_environ) * (len + 2));
 	if (!new_environ)
+	{
+		free(nameCpy);
 		return (-1);
+	}
 
 	for (i = 0; i < len; i++)
 		new_environ[i] = environ[i];
 
 	new_environ[i] = nameCpy;
+	free(nameCpy);
 	new_environ[i + 1] = NULL;
 
 	free(environ);
+	free_array(environ);
 	environ = new_environ;
 
 	return (0);
@@ -94,7 +104,6 @@ int _setenv(const char *name, const char *value, int overwrite)
 
 int _unsetenv(const char *name)
 {
-	char *nameCpy = _strdup(name);
 	int loc = envloc(name);
 	int i, j, len = 0;
 	char **new_environ;
@@ -119,6 +128,7 @@ int _unsetenv(const char *name)
 		new_environ[i] = NULL;
 		
 		free(environ);
+		free_array(environ);
 		environ = new_environ;
 	}
 

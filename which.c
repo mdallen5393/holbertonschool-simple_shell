@@ -11,14 +11,20 @@ char *_which(char *exec)
 	executable = strcpycat("/", exec);
 	path = _getenv("PATH");
 	path_list = make_env(path);
-	
+	/* print_list(path_list); */ /* testing */
 	while (path_list)
 	{
 		curr = strcpycat(path_list->str, executable);
 		if (stat(curr, &st) == 0)
+		{
+			free (executable);
+			free_list(path_list);
 			return (curr);
+		}
 		path_list = path_list->next;
 	}
+	free (executable);
+	free_list(path_list);
 
 	return (NULL);
 }
@@ -41,19 +47,8 @@ list_t *make_env(char *str)
 		add_node_end(&env, nodeStr);
 		i++;
 	}
+
+	free(buffer);
 	
 	return (env);
-}
-
-void print_array(char **array)
-{
-	int i = 0;
-
-	while (array[i] != NULL)
-	{
-		printf("%s\n", array[i]);
-		i++;
-	}
-	if (array[i] == NULL)
-		printf("NULL\n");
 }

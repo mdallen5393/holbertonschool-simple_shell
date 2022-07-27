@@ -102,7 +102,7 @@ char *_strdup(const char *str)
 
 	len = _strlen(str);
 	
-	duplicate = malloc(sizeof(*duplicate) * (len + 1));
+	duplicate = malloc(sizeof(*duplicate) * (len + 2));
 
 	for (i = 0; i < len + 1; i++)
 		duplicate[i] = str[i];

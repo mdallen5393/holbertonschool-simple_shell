@@ -1,34 +1,83 @@
 #include "main.h"
 
-int main(void)
+
+
+int main(int argc, char **argv, char **env)
 {
-	char *buffer = NULL;
-	char **command;
-	size_t bufsize = 0;
-
-	while(1)
+	if (run(isatty(STDIN_FILENO)) == 2)
 	{
-		printf("($) ");
-
-		if (getline(&buffer, &bufsize, stdin) == 1)
-			continue;
-		
-		if (strcmp(buffer, "exit\n") == 0)
-			break;
-		else
-		{
-			command = make_av(buffer);
-			if (execute(command) == -1)
-				break;
-		}
+		perror(argv[0]);
+		return (2);
 	}
-	
-	free(buffer);
-	free(av);
 
 	return (0);
 }
 
+int run(int isInteractive)
+{	
+	char *buffer = NULL;
+	char **command;
+	size_t bufsize = 0;
+	int num;
+	 
+	if (isInteractive != 1)
+	{
+		while ((num = getline(&buffer, &bufsize, stdin)) != -1)
+		{
+			if (strcmp(buffer, "exit\n") == 0)
+			{	
+				break;
+				free(buffer);
+			}
+			else if (strcmp(buffer, "env\n") == 0)
+			{
+				free(buffer);
+				printenv();
+				continue;
+			}
+			else
+			{
+				command = make_av(buffer);
+				if (execute(command) == 2)
+					return (2);
+			}
+			free (buffer);
+			free_array(command);
+		}
+	}
+	else
+	{
+		while (1)
+		{
+			_puts("($) ");
+
+			if (getline(&buffer, &bufsize, stdin) == 1)
+				continue;
+			
+			if (strcmp(buffer, "exit\n") == 0)
+			{	
+				break;
+				free(buffer);
+			}
+			else if (strcmp(buffer, "env\n") == 0)
+			{
+				free(buffer);
+				printenv();
+				continue;
+			}	
+			else
+			{
+				command = make_av(buffer);
+				if (execute(command) == 2)
+					exit(2);
+			}
+			free(buffer);
+			free_array(command);
+		}
+	}
+
+	return (0);
+}
 
 int execute(char **command)
 {
@@ -44,10 +93,7 @@ int execute(char **command)
 	if (is_kid == 0)
 	{
 		if (execve(command[0], command, NULL) == -1)
-		{
-			perror("Error: ");
-			return (-1);
-		}
+			return (2);
 	}
 
 	return (0);
@@ -60,7 +106,7 @@ char **make_av(char *str)
 	char *argument;
 	char prev = '0';
 	int i = 0, numArgs = 0;
-	
+
 	while (buffer[i])
 	{
 		if (buffer[i] == ' ')
@@ -79,12 +125,9 @@ char **make_av(char *str)
 		perror("Error malloc'ing for av\n");
 		exit(98);
 	}
-
+	
 	argument = strtok(buffer, " \n");
-	
-	if (argument[0] != '/' && argument[0] != '.')//FIXME: remake buffer
-		argument = _strdup(_which(argument));
-	
+
 	av[0] = argument;
 	
 	i = 1;
@@ -95,7 +138,29 @@ char **make_av(char *str)
 		i++;
 	}
 
-	av[i] = NULL;
-	print_array(av); //TESTING
+	if (av[0][0] != '/' && av[0][0] != '.')
+		av[0] = _strdup(_which(av[0]));
+
+	free(buffer);
+
+	/* print_array(av); */ /* TESTING */
 	return (av);
+}
+
+
+/**
+ * free_array - frees array of strings
+ * @array: pointer to 2D array of strings
+ */
+void free_array(char **array)
+{
+	int i = 0;
+
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+
+	free(array);
 }
