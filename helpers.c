@@ -31,8 +31,9 @@ void _puts(char *str)
 int _putint(int n)
 {
 	char *intStr = dipr(n);
+
 	if (!intStr)
-		return (-1); //FIXME: MALLOC FAILED IN DIPR
+		return (-1); /*FIXME: MALLOC FAILED IN DIPR*/
 
 	_puts(intStr);
 	free(intStr);
@@ -100,4 +101,6 @@ void print_array(char **array)
 	}
 	if (array[i] == NULL)
 		_puts("NULL\n");
+
+}
 }
