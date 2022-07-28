@@ -28,11 +28,18 @@ void _puts(char *str)
 	}
 }
 
+/**
+ * _putint - prints an integer.
+ * @n: integer to print.
+ *
+ * Return: -1 on failure of dipr (malloc), 0 otherwise.
+ */
 int _putint(int n)
 {
 	char *intStr = dipr(n);
+
 	if (!intStr)
-		return (-1); /* FIXME: MALLOC FAILED IN DIPR */
+		return (-1);
 
 	_puts(intStr);
 	free(intStr);
@@ -42,6 +49,7 @@ int _putint(int n)
 /**
  * dipr - convert integer types to strings and returns pointer to string
  * @n: integer to convert to string
+ *
  * Return: pointer to new string
  */
 char *dipr(int n)
@@ -88,6 +96,10 @@ char *dipr(int n)
 	return (numStr);
 }
 
+/**
+ * print_array - prints an array of strings.
+ * @array: array to print
+ */
 void print_array(char **array)
 {
 	int i = 0;
@@ -100,4 +112,6 @@ void print_array(char **array)
 	}
 	if (array[i] == NULL)
 		_puts("NULL\n");
+
 }
+

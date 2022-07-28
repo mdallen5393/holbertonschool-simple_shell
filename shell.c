@@ -1,7 +1,13 @@
 #include "main.h"
 
-
-
+/**
+ * main - runs simple shell (determines whether interactive or not)
+ * @argc: integer argument count
+ * @argv: argument vector
+ * @env: environment vector
+ *
+ * Return: 0 on success, 2 for unrecognized command
+ */
 int main(int argc, char **argv, char **env)
 {
 	if (run(isatty(STDIN_FILENO)) == 2)
@@ -13,93 +19,35 @@ int main(int argc, char **argv, char **env)
 	return (0);
 }
 
+/**
+ * run - runs simple shell in interactive or non-interactive mode
+ * @isInteractive: value returned from function isatty
+ *
+ * Return: 0 on success; 2 with unrecognized command
+ */
 int run(int isInteractive)
-{	
-	char *buffer = NULL;
-	char **command;
-	size_t bufsize = 0;
-	int line;
-	 
+{
 	if (isInteractive != 1) /* non-interactive */
 	{
-		while ((line = getline(&buffer, &bufsize, stdin)) != -1)
-		{
-			if (strcmp(buffer, "exit\n") == 0)
-			{	
-				free(buffer);
-				break;
-			}
-			else if (strcmp(buffer, "env\n") == 0)
-			{
-				free(buffer);
-				printenv();
-				continue;
-			}
-			else
-			{
-				command = make_av(buffer);
-				if (execute(command) == 2)
-					return (2);
-			}
-			free(buffer);
-			free_array(command);
-		}
+		if (run_nonint() == 2)
+			return (2);
 	}
 	else /* interactive */
-	{
-		while (1)
-		{
-			_puts("($) ");
-
-			line = getline(&buffer, &bufsize, stdin);
-			if (strcmp(buffer, "\n") == 0)
-			{
-				free(buffer);
-				buffer = NULL;
-				continue;
-			}
-			if (line == -1)
-			{
-				_putchar('\n');
-				break;
-			}
-			if (strcmp(buffer, "exit\n") == 0)
-				break;
-
-			if (strcmp(buffer, "env\n") == 0)
-			{
-				free(buffer);
-				buffer = NULL;
-				printenv();
-				continue;
-			}	
-			
-			command = make_av(buffer); /* TODO: */
-			
-			if (execute(command) == 2)
-			{
-				// free_array(command);
-				free(buffer);
-				buffer = NULL;
-				free(command);
-				continue;
-			}
-			free(buffer);
-			buffer = NULL;
-			free(command);
-
-			/* free_array(command); */ /* remove */
-		}
-		free(buffer);
-	}
+		run_int();
 
 	return (0);
 }
 
+/**
+ * execute - uses fork to create child process, which execves
+ * @command: NULL-terminated array of strings containing command and args
+ *
+ * Return: doesn't return from child; parent: 0 on success, 2 on failure
+ */
 int execute(char **command)
 {
 	pid_t is_kid;
-	
+
 	is_kid = fork();
 
 	if (is_kid != 0)
@@ -114,37 +62,38 @@ int execute(char **command)
 	return (0);
 }
 
-
+/**
+ * make_av - creates a NULL-terminated array of strings for use in execve
+ * @str: string containing name of function and arguments
+ *
+ * Return: pointer to array of strings
+ */
 char **make_av(char *str)
 {
-	char *buffer = str; /* FIXME: remove buffer; replace with str */
 	char *argument, *arg0;
 	char prev = '0';
 	int i = 0, numArgs = 0;
 	struct stat st;
 
-	while (buffer[i])
+	while (str[i])
 	{
-		if (buffer[i] == ' ')
+		if (str[i] == ' ')
 			i++;
 		else
 		{
 			numArgs++;
-			while (buffer[i] && buffer[i] != ' ')
+			while (str[i] && str[i] != ' ')
 				i++;
 		}
 	}
-	
 	av = malloc(sizeof(*av) * (numArgs + 1 /* + 1 */));
 	if (!av)
 	{
 		perror("Error malloc'ing for av\n");
 		exit(98);
 	}
-	
-	argument = strtok(buffer, " \n");
+	argument = strtok(str, " \n");
 	av[0] = argument;
-
 	i = 1;
 	while (argument != NULL)
 	{
@@ -152,19 +101,15 @@ char **make_av(char *str)
 		av[i] = argument;
 		i++;
 	}
-
 	if (stat(av[0], &st) != 0)
 	{
 		arg0 = _which(av[0]);
 		av[0] = _strdup(arg0);
 		free(arg0);
 	}
-
-	/* free(buffer); */
-	/* print_array(av); */ /* TESTING */
+	/* free(str); */
 	return (av);
 }
-
 
 /**
  * free_array - frees array of strings

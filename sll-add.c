@@ -36,6 +36,7 @@ list_t *add_node_end(list_t **head, const char *str)
 {
 	list_t *newNode = malloc(sizeof(list_t));
 	list_t *temp = *head;
+
 	if (!newNode)
 		return (NULL);
 
@@ -62,7 +63,7 @@ list_t *add_node_end(list_t **head, const char *str)
  * @str: string to be added into new node
  * Return: the address of the new node, or NULL upon failure.
  */
-list_t *insert_node_at_index(list_t **head, unsigned int idx, char* str)
+list_t *insert_node_at_index(list_t **head, unsigned int idx, char *str)
 {
 	list_t *temp = *head;
 	list_t *newNode = malloc(sizeof(*newNode));

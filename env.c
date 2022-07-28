@@ -1,16 +1,21 @@
 #include "main.h"
 
+/*
+ * int main(int ac, char **av, char **env)
+ * {
+ *	 printf("%p\n", environ[0]);
+ *	 printf("%p\n", env[0]);
+ *	 printf("%s\n", _getenv("PATH"));
+ *	 printf("%s\n", _getenv("PWD"));
+ *	 printenv();
+ *	 return (0);
+ * }
+ */
 
-/* int main(int ac, char **av, char **env)
-{
-	printf("%p\n", environ[0]);
-	printf("%p\n", env[0]);
-	printf("%s\n", _getenv("PATH"));
-	printf("%s\n", _getenv("PWD"));
-	printenv();
-	return (0);
-} */
-
+/**
+  * printenv - displays current environment
+  *
+  */
 
 void printenv(void)
 {
@@ -24,6 +29,12 @@ void printenv(void)
 	}
 }
 
+/**
+  * _getenv - gets an environment variable
+  * @name: variable to search in the environment
+  *
+  * Return: pointer to the value in the environment, NULL if there is no match
+  */
 char *_getenv(const char *name)
 {
 	unsigned int i = 0;
@@ -40,6 +51,12 @@ char *_getenv(const char *name)
 	return (NULL);
 }
 
+/**
+  * envloc - locates a variable in the environment
+  * @name: variable to be located in the environment
+  *
+  * Return: location in environment array on success, -1 on error
+  */
 int envloc(const char *name)
 {
 	unsigned int i = 0;
@@ -56,12 +73,18 @@ int envloc(const char *name)
 	return (-1);
 }
 
+/**
+  * _setenv - changes or adds an environment variable
+  * @name: name of variable to be changed/added
+  * @value: value of newly set variable
+  * @overwrite: previous value of newly set variable
+  *
+  * Return: 0 on success, -1 on error
+  */
 int _setenv(const char *name, const char *value, int overwrite)
 {
-	char *nameCpy = _strdup(name);
-	char *valueCpy = _strdup(value);
-	int i, len = 0;
-	int loc = envloc(name);
+	char *nameCpy = _strdup(name), *valueCpy = _strdup(value);
+	int i, len = 0, loc = envloc(name);
 	char **new_environ;
 	char *temp = strcpycat(nameCpy, "=");
 
@@ -102,6 +125,12 @@ int _setenv(const char *name, const char *value, int overwrite)
 	return (0);
 }
 
+/**
+  * _unsetenv - deletes the variable name from the environment
+  * @name: name of variable to be deleted
+  *
+  * Return: 0 on success, -1 on error
+  */
 int _unsetenv(const char *name)
 {
 	int loc = envloc(name);

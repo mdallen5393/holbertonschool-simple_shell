@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+ * _which - locates and returns a path to an executable, if it exists
+ * @exec: name of executable to locate
+ *
+ * Return: path of executable or NULL if it doesn't exist within $PATH
+ */
 char *_which(char *exec)
 {
 	char *executable;
@@ -7,7 +13,7 @@ char *_which(char *exec)
 	list_t *path_list, *temp;
 	char *final_path;
 	struct stat st;
-	
+
 	executable = strcpycat("/", exec);
 	path = _getenv("PATH");
 	path_list = make_env(path);
@@ -32,7 +38,12 @@ char *_which(char *exec)
 	return (NULL);
 }
 
-
+/**
+ * make_env - creates linked list of all paths in $PATH
+ * @str: environmental variable string (ex. "...:/usr/bin:/usr:/bin:...")
+ *
+ * Return: Pointer to new linked list
+ */
 list_t *make_env(char *str)
 {
 	list_t *env = NULL;
@@ -40,7 +51,7 @@ list_t *make_env(char *str)
 	char *buffer = strdup(str);
 	char *nodeStr;
 	int i = 0, numNodes = 0;
-	
+
 	nodeStr = strtok(buffer, ":");
 	add_node_end(&env, nodeStr);
 
@@ -52,6 +63,6 @@ list_t *make_env(char *str)
 	}
 
 	free(buffer);
-	
+
 	return (env);
 }

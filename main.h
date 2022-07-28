@@ -71,6 +71,10 @@ int execute(char **command);
 void free_array(char **array);
 void signal_handler(int sig);
 
+/* --- err.c --- */
+int run_nonint(void);
+int run_int(void);
+
 /* Global Variables */
 extern char **environ;
 char **av;
