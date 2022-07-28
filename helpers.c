@@ -32,7 +32,7 @@ int _putint(int n)
 {
 	char *intStr = dipr(n);
 	if (!intStr)
-		return (-1); //FIXME: MALLOC FAILED IN DIPR
+		return (-1); /* FIXME: MALLOC FAILED IN DIPR */
 
 	_puts(intStr);
 	free(intStr);
@@ -67,7 +67,7 @@ char *dipr(int n)
 		copy /= 10;
 		len++;
 	}
-	numStr = malloc(sizeof(*numStr) * (len + 1));
+	numStr = malloc(sizeof(*numStr) * (len + 1 + 1));
 
 	if (numStr == NULL)
 		return (NULL);

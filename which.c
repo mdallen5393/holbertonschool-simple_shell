@@ -4,26 +4,29 @@ char *_which(char *exec)
 {
 	char *executable;
 	char *path, *curr;
-	list_t *path_list;
+	list_t *path_list, *temp;
 	char *final_path;
 	struct stat st;
 	
 	executable = strcpycat("/", exec);
 	path = _getenv("PATH");
 	path_list = make_env(path);
-	/* print_list(path_list); */ /* testing */
-	while (path_list)
+	temp = path_list;
+
+	while (temp)
 	{
-		curr = strcpycat(path_list->str, executable);
+		curr = strcpycat(temp->str, executable);
 		if (stat(curr, &st) == 0)
 		{
-			free (executable);
+			free(executable);
 			free_list(path_list);
 			return (curr);
 		}
-		path_list = path_list->next;
+		free(curr);
+		temp = temp->next;
 	}
-	free (executable);
+
+	free(executable);
 	free_list(path_list);
 
 	return (NULL);

@@ -18,16 +18,16 @@ int run(int isInteractive)
 	char *buffer = NULL;
 	char **command;
 	size_t bufsize = 0;
-	int num;
+	int line;
 	 
-	if (isInteractive != 1)
+	if (isInteractive != 1) /* non-interactive */
 	{
-		while ((num = getline(&buffer, &bufsize, stdin)) != -1)
+		while ((line = getline(&buffer, &bufsize, stdin)) != -1)
 		{
 			if (strcmp(buffer, "exit\n") == 0)
 			{	
-				break;
 				free(buffer);
+				break;
 			}
 			else if (strcmp(buffer, "env\n") == 0)
 			{
@@ -41,39 +41,56 @@ int run(int isInteractive)
 				if (execute(command) == 2)
 					return (2);
 			}
-			free (buffer);
+			free(buffer);
 			free_array(command);
 		}
 	}
-	else
+	else /* interactive */
 	{
 		while (1)
 		{
 			_puts("($) ");
 
-			if (getline(&buffer, &bufsize, stdin) == 1)
-				continue;
-			
-			if (strcmp(buffer, "exit\n") == 0)
-			{	
-				break;
-				free(buffer);
-			}
-			else if (strcmp(buffer, "env\n") == 0)
+			line = getline(&buffer, &bufsize, stdin);
+			if (strcmp(buffer, "\n") == 0)
 			{
 				free(buffer);
+				buffer = NULL;
+				continue;
+			}
+			if (line == -1)
+			{
+				_putchar('\n');
+				break;
+			}
+			if (strcmp(buffer, "exit\n") == 0)
+				break;
+
+			if (strcmp(buffer, "env\n") == 0)
+			{
+				free(buffer);
+				buffer = NULL;
 				printenv();
 				continue;
 			}	
-			else
+			
+			command = make_av(buffer); /* TODO: */
+			
+			if (execute(command) == 2)
 			{
-				command = make_av(buffer);
-				if (execute(command) == 2)
-					exit(2);
+				// free_array(command);
+				free(buffer);
+				buffer = NULL;
+				free(command);
+				continue;
 			}
 			free(buffer);
-			free_array(command);
+			buffer = NULL;
+			free(command);
+
+			/* free_array(command); */ /* remove */
 		}
+		free(buffer);
 	}
 
 	return (0);
@@ -86,10 +103,8 @@ int execute(char **command)
 	is_kid = fork();
 
 	if (is_kid != 0)
-	{
 		wait(NULL);
-		return(0);
-	}
+
 	if (is_kid == 0)
 	{
 		if (execve(command[0], command, NULL) == -1)
@@ -102,10 +117,11 @@ int execute(char **command)
 
 char **make_av(char *str)
 {
-	char *buffer = strdup(str);
-	char *argument;
+	char *buffer = str; /* FIXME: remove buffer; replace with str */
+	char *argument, *arg0;
 	char prev = '0';
 	int i = 0, numArgs = 0;
+	struct stat st;
 
 	while (buffer[i])
 	{
@@ -119,7 +135,7 @@ char **make_av(char *str)
 		}
 	}
 	
-	av = malloc(sizeof(*av) * (numArgs + 1));
+	av = malloc(sizeof(*av) * (numArgs + 1 /* + 1 */));
 	if (!av)
 	{
 		perror("Error malloc'ing for av\n");
@@ -127,9 +143,8 @@ char **make_av(char *str)
 	}
 	
 	argument = strtok(buffer, " \n");
-
 	av[0] = argument;
-	
+
 	i = 1;
 	while (argument != NULL)
 	{
@@ -138,11 +153,14 @@ char **make_av(char *str)
 		i++;
 	}
 
-	if (av[0][0] != '/' && av[0][0] != '.')
-		av[0] = _strdup(_which(av[0]));
+	if (stat(av[0], &st) != 0)
+	{
+		arg0 = _which(av[0]);
+		av[0] = _strdup(arg0);
+		free(arg0);
+	}
 
-	free(buffer);
-
+	/* free(buffer); */
 	/* print_array(av); */ /* TESTING */
 	return (av);
 }

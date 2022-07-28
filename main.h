@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <sys/wait.h>
 #include <limits.h>
+#include <signal.h>
 
 
 /* Structs & Typedefs */
@@ -61,13 +62,14 @@ size_t list_len(const list_t *h);
 list_t *add_node(list_t **head, const char *str);
 list_t *add_node_end(list_t **head, const char *str);
 void free_list(list_t *head);
-list_t *insert_node_at_index(list_t **head, unsigned int idx, char* str);
+list_t *insert_node_at_index(list_t **head, unsigned int idx, char *str);
 
 /* --- shell.c --- */
 char **make_av(char *);
 int run(int isInteractive);
 int execute(char **command);
 void free_array(char **array);
+void signal_handler(int sig);
 
 /* Global Variables */
 extern char **environ;

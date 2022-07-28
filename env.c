@@ -69,7 +69,7 @@ int _setenv(const char *name, const char *value, int overwrite)
 	nameCpy = strcpycat(temp, valueCpy);
 	free(valueCpy);
 	free(temp);
-	
+
 	if (loc != -1)
 	{
 		if (overwrite == 0)
@@ -115,7 +115,7 @@ int _unsetenv(const char *name)
 	{
 		free(environ[loc]);
 		new_environ = malloc(sizeof(*new_environ) * len);
-		
+
 		j = 0;
 		for (i = 0; i < len; i++)
 		{
@@ -126,7 +126,7 @@ int _unsetenv(const char *name)
 			}
 		}
 		new_environ[i] = NULL;
-		
+
 		free(environ);
 		free_array(environ);
 		environ = new_environ;

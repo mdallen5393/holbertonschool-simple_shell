@@ -20,7 +20,7 @@ char *strcpycat(char *str1, char *str2)
 	int l2 = _strlen(str2);
 	int i, j;
 
-	newStr = malloc(sizeof(*newStr)*(l1 + l2 + 1));
+	newStr = malloc(sizeof(*newStr) * (l1 + l2 + 1));
 
 	for (i = 0; i < l1; i++)
 		newStr[i] = str1[i];
@@ -102,9 +102,9 @@ char *_strdup(const char *str)
 
 	len = _strlen(str);
 	
-	duplicate = malloc(sizeof(*duplicate) * (len + 2));
+	duplicate = malloc(sizeof(*duplicate) * (len + 1));
 
-	for (i = 0; i < len + 1; i++)
+	for (i = 0; i < len; i++)
 		duplicate[i] = str[i];
 
 	duplicate[i] = '\0';
