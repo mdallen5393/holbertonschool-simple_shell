@@ -9,7 +9,6 @@ size_t print_list(const list_t *h)
 {
 	int num = 0;
 	const list_t *temp = h;
-	char *intStr;
 
 	while (temp)
 	{

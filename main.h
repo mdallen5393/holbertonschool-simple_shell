@@ -66,14 +66,14 @@ list_t *insert_node_at_index(list_t **head, unsigned int idx, char *str);
 
 /* --- shell.c --- */
 char **make_av(char *);
-int run(int isInteractive);
+int run(int isInteractive, char *shell_name);
 int execute(char **command);
 void free_array(char **array);
 void signal_handler(int sig);
 
 /* --- err.c --- */
-int run_nonint(void);
-int run_int(void);
+int run_nonint(char *shell_name);
+int run_int(char *shell_name);
 
 /* Global Variables */
 extern char **environ;

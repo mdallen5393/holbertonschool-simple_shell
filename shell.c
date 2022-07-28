@@ -10,7 +10,10 @@
  */
 int main(int argc, char **argv, char **env)
 {
-	if (run(isatty(STDIN_FILENO)) == 2)
+	(void)argc;
+	(void)env;
+
+	if (run(isatty(STDIN_FILENO), argv[0]) == 2)
 	{
 		perror(argv[0]);
 		return (2);
@@ -25,15 +28,15 @@ int main(int argc, char **argv, char **env)
  *
  * Return: 0 on success; 2 with unrecognized command
  */
-int run(int isInteractive)
+int run(int isInteractive, char *shell_name)
 {
 	if (isInteractive != 1) /* non-interactive */
 	{
-		if (run_nonint() == 2)
+		if (run_nonint(shell_name) == 2)
 			return (2);
 	}
 	else /* interactive */
-		run_int();
+		run_int(shell_name);
 
 	return (0);
 }
@@ -71,7 +74,6 @@ int execute(char **command)
 char **make_av(char *str)
 {
 	char *argument, *arg0;
-	char prev = '0';
 	int i = 0, numArgs = 0;
 	struct stat st;
 

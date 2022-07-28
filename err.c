@@ -2,10 +2,11 @@
 
 /**
  * run_nonint - run shell non-interactively
+ * @shell_name: name of executable shell
  *
  * Return: 0 on success, 2 on unrecognized command
  */
-int run_nonint(void)
+int run_nonint(char *shell_name)
 {
 	char **command;
 	char *buffer = NULL;
@@ -27,18 +28,23 @@ int run_nonint(void)
 		}
 		command = make_av(buffer);
 		if (execute(command) == 2)
-			return (2);
+		{
+			_puts(shell_name);
+			_puts(": No such file or directory\n");
+		}
 		free(buffer);
 		free_array(command);
 	}
+	return (0);
 }
 
 /**
  * run_int - run shell interactively
+ * @shell_name: name of executable shell
  *
  * Return: 0 on success, 2 on unrecognized command
  */
-int run_int(void)
+int run_int(char *shell_name)
 {
 	char **command, *buffer = NULL;
 	size_t bufsize = 0;
@@ -69,12 +75,12 @@ int run_int(void)
 		command = make_av(buffer); /* TODO: */
 		if (execute(command) == 2)
 		{ /* free_array(command); */
-			free(buffer), buffer = NULL;
-			free(command);
+			free(buffer), buffer = NULL, free(command);
+			_puts(shell_name), _puts(": No such file or directory\n");
 			continue;
 		}
-		free(buffer), buffer = NULL;
-		free(command); /* free_array(command); */ /* remove */
+		free(buffer), buffer = NULL, free(command); /* free_array(command); */
 	}
 	free(buffer);
+	return (0);
 }

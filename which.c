@@ -11,7 +11,6 @@ char *_which(char *exec)
 	char *executable;
 	char *path, *curr;
 	list_t *path_list, *temp;
-	char *final_path;
 	struct stat st;
 
 	executable = strcpycat("/", exec);
@@ -50,7 +49,7 @@ list_t *make_env(char *str)
 
 	char *buffer = strdup(str);
 	char *nodeStr;
-	int i = 0, numNodes = 0;
+	int i = 0;
 
 	nodeStr = strtok(buffer, ":");
 	add_node_end(&env, nodeStr);
