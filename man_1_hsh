@@ -1,0 +1,114 @@
+.Dd 7/28/22               \" DATE
+.Dt simple_shell 1      \" Program name and manual section number
+.Os Allen/French/Mcgowan
+.Sh NAME                 \" Section Header - required - don't modify
+.Nm hsh
+.\" The following lines are read in generating the apropos(man -k) database. Use only key
+.\" words here as the database is built based on the words here and in the .ND line.
+.Nd holberton simple shell command language interpreter
+.Sh SYNOPSIS             \" Section Header - required - don't modify
+.Nm
+.Op Ar command_string
+.Sh DESCRIPTION          \" Section Header - required - don't modify
+.Nm 
+is a simple implementation of a command language interpreter that executes
+commands read from standard input or a specified file.
+.Sh OPERANDS
+The following operands are supported:
+.Pp
+.Bl -tag -width -indent
+.It command_string
+Used to specify the executable or program to attempt to run, along with any variables for use in the function.
+.El
+.Pp
+.Sh RETURN VALUE
+Upon successful return,
+.Nm
+returns 0.
+Upon error, a different value is returned corresponding to the status of the program.
+.Pp
+.Sh FILES                \" File used or created by the topic of the man page
+.Pp
+.Bl -tag -width -indent
+.It ENV.C
+contains functions for operations involving environment variables
+.It ERR.C
+contains error functions, as well as run functions
+.It HELPERS.C
+contains miscellaneous helper functions, including _putchar(), _puts(),
+_putint(), dipr(), and print_array
+.It MAIN.H
+header file containing structs, function prototypes, library includes,
+and global variables
+.It SHELL.C
+contains the main() function, as well as functions for running commands
+.It SLL-ADD.C
+contains functions for adding to singly-linked lists
+.It SLL-OPS.C
+contains other singly-linked list functions (such as delete, print, etc.)
+.It STROPS.C
+contains string operation functions such as strcpycat(), _strlen(),
+_strcmp(), _strncmp(), and _strdup()
+.It WHICH.C
+contains an implementation of the which bash command
+.El                       \" Ends the list
+.Sh BUGS              \" Document known, unremedied bugs
+This implementation of
+.Nm
+is incomplete.  Certain common commands (such as 'cd') are not supported.
+.Pp
+Semicolons, pipes, redirections, and other advanced features are not currently
+supported.
+.Pp
+Executables that cannot be found cause segmentation faults.
+.Pp There is a known small memory leak.
+.Sh EXAMPLES
+.Bl -tag -width -indent
+.It To print a list of environment variables, use the builtin env:
+($) env
+.Pp
+.Output:
+.Pp
+HOSTNAME=18e23b648930
+.br
+LANGUAGE=en_US:en
+.br
+LESS_TERMCAP_se=
+.br
+LESS_TERMCAP_so=
+.br
+PWD=/root/holbertonschool-simple_shell
+.br
+TZ=America/Los_Angeles
+.br
+(etc.)
+.It To use the "ls" command:
+($) ls OR ($) /bin/ls
+.Pp
+Output:
+.Pp
+file1.c  file2.c  file3.c file4
+.It To use "ls" with arguments:
+.Pp
+($) ls -l /usr/
+.Pp
+Output:
+.Pp
+total 20
+.br
+drwxr-xr-x 1 root root 4096 Jul 26 02:28 bin
+.br
+(etc.)
+.It To run in non-interactive mode, pipe a command into the program:
+.Pp
+# echo "ls" | ./hsh
+.Pp
+file1.c  file2.c file3.c file4.c
+.It To exit, use the builtin exit.
+.Pp
+($) exit
+.El
+.Sh SEE ALSO
+.\" List links in ascending order by section, alphabetically within a section.
+.\" Please do not reference files that do not exist without filing a bug report
+.Xr sh 1p
