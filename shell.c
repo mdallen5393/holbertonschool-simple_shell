@@ -25,7 +25,7 @@ int main(int argc, char **argv, char **env)
 /**
  * run - runs simple shell in interactive or non-interactive mode
  * @isInteractive: value returned from function isatty
- *
+ * @shell_name: name of version of shell that is running
  * Return: 0 on success; 2 with unrecognized command
  */
 int run(int isInteractive, char *shell_name)
