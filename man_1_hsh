@@ -10,7 +10,7 @@
 .Nm
 .Op Ar command_string
 .Sh DESCRIPTION          \" Section Header - required - don't modify
-.Nm 
+.Nm
 is a simple implementation of a command language interpreter that executes
 commands read from standard input or a specified file.
 .Sh OPERANDS
